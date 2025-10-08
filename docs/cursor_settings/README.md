@@ -9,9 +9,19 @@
 - ✅ **global_rules.md** - AI правила для C++, Python, C#, MATLAB
 - ✅ **mcp.json** - конфигурация MCP серверов (Context7, GitHub, Sequential Thinking, Playwright, MemoryBank, BraveSearch, Firecrawl)
 
+## 📚 Документация:
+
+- 📖 **[SPEC_KIT_MEMORY_BANK_GUIDE_RU.md](SPEC_KIT_MEMORY_BANK_GUIDE_RU.md)** - Полное руководство по Spec-Kit и MemoryBank
+- ⚡ **[QUICK_REFERENCE_RU.md](QUICK_REFERENCE_RU.md)** - Шпаргалка на одну страницу (распечатай и держи под рукой!)
+- 🪟 **[INSTALLATION_WINDOWS_RU.md](INSTALLATION_WINDOWS_RU.md)** - Установка на Windows
+- 🐧 **[INSTALLATION_UBUNTU_RU.md](INSTALLATION_UBUNTU_RU.md)** - Установка на Ubuntu/Linux
+
 ## 📖 Установка
 
-### Linux:
+### Linux/Ubuntu:
+См. подробную инструкцию в файле **INSTALLATION_UBUNTU_RU.md**
+
+Краткая версия:
 ```bash
 # Основные настройки
 cp settings.json keybindings.json ~/.config/Cursor/User/
@@ -21,6 +31,10 @@ cp global_rules.md ~/.cursor/
 
 # MCP серверы (сначала настройте токены!)
 cp mcp.json ~/.cursor/
+
+# Spec-Kit
+git clone https://github.com/github/spec-kit.git ~/tools/spec-kit
+pip3 install -e ~/tools/spec-kit/
 ```
 
 ### Windows:
