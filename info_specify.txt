@@ -1,0 +1,23 @@
+│  1. You're already in the project directory!                                                        │
+│  2. Start using slash commands with your AI agent:                                                  │
+│     2.1 /constitution - Establish project principles                                                │
+│     2.2 /specify - Create baseline specification                                                    │
+│     2.3 /plan - Create implementation plan                                                          │
+│     2.4 /tasks - Generate actionable tasks                                                          │
+│     2.5 /implement - Execute implementation           
+
+Необходимо уточнить:
+Одновременное подключение к PostgreSQL и SQLite или выбор одной БД?
+Конкретные целевые показатели производительности для обработки в реальном времени?
+Следующие шаги:
+/clarify — уточнить неопределенности
+/plan — создать технический план
+/tasks — разбить на задачи
+
+│ 1. Вы уже в каталоге проекта! │
+│ 2. Начните использовать слэш-команды с вашим ИИ-агентом: │
+│ 2.1 /constitution — Определение принципов проекта │
+│ 2.2 /specify — Создание базовой спецификации │
+│ 2.3 /plan — Создание плана внедрения │
+│ 2.4 /tasks — Создание выполнимых задач │
+│ 2.5 /implement — Выполнение внедрения
