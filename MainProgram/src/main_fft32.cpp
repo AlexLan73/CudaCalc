@@ -30,7 +30,7 @@ int main() {
         constexpr int RAY_COUNT = 4;
         constexpr int POINTS_PER_RAY = 131072;  // 16384 windows × 32 / 4 rays
         constexpr int FFT_WINDOW = 32;
-        constexpr int PERIOD = 16;  // Period for sine wave
+        constexpr int PERIOD = 32;  // period = wFFT (was wFFT/2)
         constexpr int NUM_RUNS = 20;
         constexpr double TARGET_MS = 0.0488;  // From AMGpuCuda (16384 windows)
 

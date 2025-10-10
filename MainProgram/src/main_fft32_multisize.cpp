@@ -46,7 +46,7 @@ int main() {
         };
         
         constexpr int FFT_WINDOW = 32;
-        constexpr int PERIOD = 16;
+        constexpr int PERIOD = 32;  // period = wFFT (was wFFT/2)
         constexpr int NUM_RUNS = 10;  // Runs per config
         
         std::cout << "FFT window: " << FFT_WINDOW << "\n";

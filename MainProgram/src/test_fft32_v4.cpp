@@ -19,7 +19,7 @@ int main() {
         std::cout << "\n=== FFT32 V4 CORRECT TEST (256 windows) ===\n\n";
 
         // Generate signal: 256 windows
-        SineGenerator gen(4, 2048, 16);
+        SineGenerator gen(4, 2048, 32);  // period = wFFT (was wFFT/2)
         auto input = gen.generate(32, false);
         const int num_windows = 256;
         

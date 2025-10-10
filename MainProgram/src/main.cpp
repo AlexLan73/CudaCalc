@@ -23,7 +23,7 @@ int main() {
     try {
         // 1. Generate signal
         std::cout << "=== 1. Generating test signal ===" << std::endl;
-        SineGenerator gen(4, 1024, 8);
+        SineGenerator gen(4, 1024, 16);  // period = wFFT (was wFFT/2)
         auto input = gen.generate(16, false);
         std::cout << "✓ Signal: " << input.signal.size() << " points" << std::endl;
         std::cout << "  Configuration: " << input.config.ray_count << " rays × " 
