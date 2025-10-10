@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../lib/libSignalGenerators.a CMakeFiles/SignalGenerators.dir/src/placeholder.cpp.o
+/usr/bin/ranlib ../lib/libSignalGenerators.a
