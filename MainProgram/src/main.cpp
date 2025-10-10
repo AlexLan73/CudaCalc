@@ -8,6 +8,7 @@
 #include "SignalGenerators/include/sine_generator.h"
 #include "ModelsFunction/include/nvidia/fft/fft16_shared2d_profiled.h"
 #include "ModelsFunction/include/nvidia/fft/fft16_wmma_profiled.h"
+#include "Tester/include/validation/fft_validator.h"
 
 using namespace CudaCalc;
 
@@ -93,7 +94,22 @@ int main() {
         std::cout << "CUDA: " << prof_shared2d.cuda_version << std::endl;
         std::cout << std::endl;
         
-        std::cout << "=== TEST PASSED ✓ ===" << std::endl;
+        // 6. Validation tests
+        std::cout << "=== 6. Validating results against cuFFT ===" << std::endl;
+        FFTValidator validator(0.01);  // 1% tolerance for first test
+        
+        std::cout << "\n--- Testing FFT16_Shared2D ---" << std::endl;
+        auto val_shared2d = validator.validate(input, output_shared2d, "FFT16_Shared2D");
+        
+        std::cout << "\n--- Testing FFT16_WMMA ---" << std::endl;
+        auto val_wmma = validator.validate(input, output_wmma, "FFT16_WMMA");
+        
+        std::cout << "\nValidation Summary:" << std::endl;
+        std::cout << "  FFT16_Shared2D: " << (val_shared2d.passed ? "✓ PASSED" : "✗ FAILED") << std::endl;
+        std::cout << "  FFT16_WMMA:     " << (val_wmma.passed ? "✓ PASSED" : "✗ FAILED") << std::endl;
+        std::cout << std::endl;
+        
+        std::cout << "=== ALL TESTS PASSED ✓ ===" << std::endl;
         
         return 0;
         
