@@ -100,5 +100,25 @@ target_link_libraries(test_fft32_v5
         nlohmann_json::nlohmann_json
 )
 
-message(STATUS "  MainProgram: Executables configured (FFT16, FFT32, FFT32_Table, Test_V4, Test_V5)")
+# FFT64 Quick Test
+add_executable(test_fft64)
+
+target_sources(test_fft64
+    PRIVATE
+        src/test_fft64.cpp
+)
+
+target_link_libraries(test_fft64
+    PRIVATE
+        Interface
+        SignalGenerators
+        DataContext
+        ModelsFunction
+        Tester
+        CUDA::cudart
+        CUDA::cufft
+        nlohmann_json::nlohmann_json
+)
+
+message(STATUS "  MainProgram: Executables configured (FFT16, FFT32, FFT32_Table, Test_V4, Test_V5, Test_FFT64)")
 

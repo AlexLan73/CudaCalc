@@ -27,6 +27,8 @@ target_sources(ModelsFunction
         src/nvidia/fft/FFT32_WMMA/fft32_wmma_v4_correct_kernel.cu
         src/nvidia/fft/FFT32_WMMA/fft32_wmma_v5_fixed.cpp
         src/nvidia/fft/FFT32_WMMA/fft32_wmma_v5_fixed_kernel.cu
+        src/nvidia/fft/FFT64_WMMA/fft64_wmma_optimized.cpp
+        src/nvidia/fft/FFT64_WMMA/fft64_wmma_optimized_kernel.cu
 )
 
 target_include_directories(ModelsFunction
