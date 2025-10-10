@@ -28,7 +28,7 @@ namespace CudaCalc {
  * Performance target: < 1.0 ms compute time for 256 windows on RTX 3060
  */
 class FFT16_Shared2D : public IGPUProcessor {
-private:
+protected:
     // Device memory
     cuComplex* d_input_ = nullptr;
     cuComplex* d_output_ = nullptr;
