@@ -1,63 +1,97 @@
 /**
  * @file main.cpp
- * @brief Test FFT16_Shared2D with profiling
+ * @brief Performance comparison: FFT16_Shared2D vs FFT16_WMMA
  */
 
 #include <iostream>
 #include <iomanip>
 #include "SignalGenerators/include/sine_generator.h"
 #include "ModelsFunction/include/nvidia/fft/fft16_shared2d_profiled.h"
+#include "ModelsFunction/include/nvidia/fft/fft16_wmma_profiled.h"
 
 using namespace CudaCalc;
 
 int main() {
-    std::cout << "=== CudaCalc FFT16 Profiling Test ===" << std::endl;
+    std::cout << "=== CudaCalc FFT16 Performance Comparison ===" << std::endl;
     std::cout << std::endl;
     
     try {
         // 1. Generate signal
-        std::cout << "=== 1. Generating signal ===" << std::endl;
+        std::cout << "=== 1. Generating test signal ===" << std::endl;
         SineGenerator gen(4, 1024, 8);
         auto input = gen.generate(16, false);
         std::cout << "✓ Signal: " << input.signal.size() << " points" << std::endl;
+        std::cout << "  Configuration: " << input.config.ray_count << " rays × " 
+                  << input.config.points_per_ray << " points, FFT window = " 
+                  << input.config.window_fft << std::endl;
         std::cout << std::endl;
         
-        // 2. Run with profiling
-        std::cout << "=== 2. Running FFT16_Shared2D with profiling ===" << std::endl;
-        FFT16_Shared2D_Profiled fft;
-        fft.initialize();
+        // 2. Test FFT16_Shared2D
+        std::cout << "=== 2. Testing FFT16_Shared2D (2D Shared Memory, FP32) ===" << std::endl;
+        FFT16_Shared2D_Profiled fft_shared2d;
+        fft_shared2d.initialize();
         
-        BasicProfilingResult profiling;
-        auto output = fft.process_with_profiling(input, profiling);
+        BasicProfilingResult prof_shared2d;
+        auto output_shared2d = fft_shared2d.process_with_profiling(input, prof_shared2d);
         
-        std::cout << "✓ FFT computed: " << output.num_windows() << " windows" << std::endl;
-        std::cout << std::endl;
-        
-        // 3. Show profiling results
-        std::cout << "=== 3. Profiling Results ===" << std::endl;
+        std::cout << "✓ FFT computed: " << output_shared2d.num_windows() << " windows" << std::endl;
         std::cout << std::fixed << std::setprecision(3);
-        std::cout << "  Upload:   " << profiling.upload_ms << " ms" << std::endl;
-        std::cout << "  Compute:  " << profiling.compute_ms << " ms" << std::endl;
-        std::cout << "  Download: " << profiling.download_ms << " ms" << std::endl;
-        std::cout << "  ─────────────────────" << std::endl;
-        std::cout << "  TOTAL:    " << profiling.total_ms << " ms" << std::endl;
+        std::cout << "  Upload:   " << prof_shared2d.upload_ms << " ms" << std::endl;
+        std::cout << "  Compute:  " << prof_shared2d.compute_ms << " ms ⚡" << std::endl;
+        std::cout << "  Download: " << prof_shared2d.download_ms << " ms" << std::endl;
+        std::cout << "  TOTAL:    " << prof_shared2d.total_ms << " ms" << std::endl;
         std::cout << std::endl;
         
-        std::cout << "  GPU:       " << profiling.gpu_name << std::endl;
-        std::cout << "  CUDA:      " << profiling.cuda_version << std::endl;
-        std::cout << "  Algorithm: " << profiling.algorithm << std::endl;
-        std::cout << "  Timestamp: " << profiling.timestamp << std::endl;
+        fft_shared2d.cleanup();
+        
+        // 3. Test FFT16_WMMA
+        std::cout << "=== 3. Testing FFT16_WMMA (Tensor Core optimized) ===" << std::endl;
+        FFT16_WMMA_Profiled fft_wmma;
+        fft_wmma.initialize();
+        
+        BasicProfilingResult prof_wmma;
+        auto output_wmma = fft_wmma.process_with_profiling(input, prof_wmma);
+        
+        std::cout << "✓ FFT computed: " << output_wmma.num_windows() << " windows" << std::endl;
+        std::cout << std::fixed << std::setprecision(3);
+        std::cout << "  Upload:   " << prof_wmma.upload_ms << " ms" << std::endl;
+        std::cout << "  Compute:  " << prof_wmma.compute_ms << " ms ⚡" << std::endl;
+        std::cout << "  Download: " << prof_wmma.download_ms << " ms" << std::endl;
+        std::cout << "  TOTAL:    " << prof_wmma.total_ms << " ms" << std::endl;
         std::cout << std::endl;
         
-        // 4. Performance metrics
-        std::cout << "=== 4. Performance Metrics ===" << std::endl;
-        int total_points = input.signal.size();
-        float compute_gflops = (5.0f * total_points * std::log2(16)) / (profiling.compute_ms * 1e6);
-        std::cout << "  Throughput: " << (total_points / (profiling.total_ms * 1000.0)) << " Mpts/s" << std::endl;
-        std::cout << "  Compute:    ~" << compute_gflops << " GFLOPS (approx)" << std::endl;
+        fft_wmma.cleanup();
+        
+        // 4. Performance comparison
+        std::cout << "=== 4. Performance Comparison ===" << std::endl;
+        std::cout << "┌────────────────────┬────────────────┬────────────────┐" << std::endl;
+        std::cout << "│ Algorithm          │ Compute (ms)   │ Total (ms)     │" << std::endl;
+        std::cout << "├────────────────────┼────────────────┼────────────────┤" << std::endl;
+        std::cout << "│ FFT16_Shared2D     │ " << std::setw(14) << prof_shared2d.compute_ms 
+                  << " │ " << std::setw(14) << prof_shared2d.total_ms << " │" << std::endl;
+        std::cout << "│ FFT16_WMMA         │ " << std::setw(14) << prof_wmma.compute_ms 
+                  << " │ " << std::setw(14) << prof_wmma.total_ms << " │" << std::endl;
+        std::cout << "└────────────────────┴────────────────┴────────────────┘" << std::endl;
         std::cout << std::endl;
         
-        fft.cleanup();
+        // 5. Winner
+        float speedup = prof_shared2d.compute_ms / prof_wmma.compute_ms;
+        std::cout << "=== 5. Result ===" << std::endl;
+        if (speedup > 1.02f) {
+            std::cout << "🏆 WINNER: FFT16_WMMA" << std::endl;
+            std::cout << "   Speedup: " << std::setprecision(2) << speedup << "x faster" << std::endl;
+        } else if (speedup < 0.98f) {
+            std::cout << "🏆 WINNER: FFT16_Shared2D" << std::endl;
+            std::cout << "   Speedup: " << std::setprecision(2) << (1.0f/speedup) << "x faster" << std::endl;
+        } else {
+            std::cout << "⚖️  EQUAL: Both implementations perform similarly" << std::endl;
+            std::cout << "   Difference: < 2%" << std::endl;
+        }
+        std::cout << std::endl;
+        
+        std::cout << "GPU: " << prof_shared2d.gpu_name << std::endl;
+        std::cout << "CUDA: " << prof_shared2d.cuda_version << std::endl;
+        std::cout << std::endl;
         
         std::cout << "=== TEST PASSED ✓ ===" << std::endl;
         

@@ -7,9 +7,9 @@ target_sources(ModelsFunction
         src/nvidia/fft/FFT16_Shared2D/fft16_shared2d.cpp
         src/nvidia/fft/FFT16_Shared2D/fft16_shared2d_kernel.cu
         src/nvidia/fft/FFT16_Shared2D/fft16_shared2d_profiled.cpp
-        # Will add later:
-        # src/nvidia/fft/FFT16_WMMA/fft16_wmma.cpp
-        # src/nvidia/fft/FFT16_WMMA/fft16_wmma_kernel.cu
+        src/nvidia/fft/FFT16_WMMA/fft16_wmma.cpp
+        src/nvidia/fft/FFT16_WMMA/fft16_wmma_kernel.cu
+        src/nvidia/fft/FFT16_WMMA/fft16_wmma_profiled.cpp
 )
 
 target_include_directories(ModelsFunction
