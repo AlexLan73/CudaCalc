@@ -123,12 +123,11 @@ __global__ void fft16_wmma_ultra_kernel(
     __half* fft_real = shared_real + x * 16;
     __half* fft_imag = shared_imag + x * 16;
     
-    // === LOAD WITH BIT-REVERSAL ===
+    // === LOAD INPUT (NO bit-reversal in old code!) ===
     const int input_idx = global_fft_id * 16 + y;
-    const int reversed_y = BIT_REVERSED_16[y];
     
-    fft_real[reversed_y] = input_real[input_idx];
-    fft_imag[reversed_y] = input_imag[input_idx];
+    fft_real[y] = input_real[input_idx];
+    fft_imag[y] = input_imag[input_idx];
     
     __syncthreads();
     

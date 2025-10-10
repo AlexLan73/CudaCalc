@@ -9,6 +9,8 @@
 #include "ModelsFunction/include/nvidia/fft/fft16_shared2d_profiled.h"
 #include "ModelsFunction/include/nvidia/fft/fft16_wmma_profiled.h"
 #include "ModelsFunction/include/nvidia/fft/fft16_wmma_ultra_profiled.h"
+#include "ModelsFunction/include/nvidia/fft/fft16_wmma_optimized.h"
+#include "ModelsFunction/include/nvidia/fft/fft16_wmma_optimized_profiled.h"
 #include "Tester/include/validation/fft_validator.h"
 #include "DataContext/include/json_logger.h"
 
@@ -83,7 +85,60 @@ int main() {
         
         fft_ultra.cleanup();
         
-        // 4. Performance comparison (3 versions!)
+        // 3b. Test OPTIMIZED FP32 (2D [64,16], __ldg, bit-shifts) - MULTIPLE RUNS!
+        std::cout << "=== 3b. Testing FFT16_WMMA_Optimized (2D blocks [64,16]!) ===" << std::endl;
+        FFT16_WMMA_Optimized_Profiled fft_opt;
+        fft_opt.initialize();
+        
+        // Warmup
+        BasicProfilingResult warmup_prof;
+        auto warmup_out = fft_opt.process_with_profiling(input, warmup_prof);
+        std::cout << "Warmup: " << warmup_prof.compute_ms << " ms" << std::endl;
+        
+        // Multiple runs for COMPUTE only
+        const int NUM_RUNS = 20;
+        std::vector<float> compute_times;
+        
+        std::cout << "Running " << NUM_RUNS << " iterations (COMPUTE only)..." << std::endl;
+        for (int i = 0; i < NUM_RUNS; ++i) {
+            BasicProfilingResult prof;
+            auto out = fft_opt.process_with_profiling(input, prof);
+            compute_times.push_back(prof.compute_ms);
+        }
+        
+        std::sort(compute_times.begin(), compute_times.end());
+        float min_time = compute_times[0];
+        float median_time = compute_times[NUM_RUNS/2];
+        float avg_time = 0;
+        for (float t : compute_times) avg_time += t;
+        avg_time /= NUM_RUNS;
+        
+        std::cout << std::endl;
+        std::cout << "Compute time statistics (" << NUM_RUNS << " runs):" << std::endl;
+        std::cout << std::fixed << std::setprecision(6);
+        std::cout << "  Min:    " << min_time << " ms ⚡⚡⚡" << std::endl;
+        std::cout << "  Median: " << median_time << " ms" << std::endl;
+        std::cout << "  Mean:   " << avg_time << " ms" << std::endl;
+        std::cout << "  Max:    " << compute_times.back() << " ms" << std::endl;
+        std::cout << std::endl;
+        
+        std::cout << "📊 COMPARISON WITH TARGET:" << std::endl;
+        std::cout << "  Old project:  0.007950 ms" << std::endl;
+        std::cout << "  Our MIN:      " << min_time << " ms" << std::endl;
+        std::cout << "  Our MEDIAN:   " << median_time << " ms" << std::endl;
+        
+        if (min_time <= 0.00795f) {
+            std::cout << "  ✅✅✅ TARGET ACHIEVED!" << std::endl;
+        } else {
+            float gap = ((min_time / 0.00795f) - 1.0f) * 100.0f;
+            std::cout << "  Gap: +" << std::setprecision(1) << gap << "%" << std::endl;
+        }
+        std::cout << std::endl;
+        
+        auto output_opt = fft_opt.process_with_profiling(input, warmup_prof);
+        fft_opt.cleanup();
+        
+        //  4. Performance comparison (4 versions!)
         std::cout << "=== 4. Performance Comparison ===" << std::endl;
         std::cout << "┌──────────────────────┬────────────────┬────────────────┬──────────────┐" << std::endl;
         std::cout << "│ Algorithm            │ Compute (ms)   │ Total (ms)     │ Speedup      │" << std::endl;
