@@ -4,12 +4,9 @@ add_library(DataContext STATIC)
 
 target_sources(DataContext
     PRIVATE
-        # Will add: src/json_logger.cpp, src/model_archiver.cpp
+        src/json_logger.cpp
+        # Will add: src/model_archiver.cpp
 )
-
-# Temporary: add dummy source to allow linking
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "// Temporary")
-target_sources(DataContext PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
 
 target_include_directories(DataContext
     PUBLIC

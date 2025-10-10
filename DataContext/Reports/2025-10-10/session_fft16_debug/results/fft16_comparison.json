@@ -1,0 +1,34 @@
+{
+  "best": {
+    "compute_ms": 0.009216000325977802,
+    "fastest": "FFT16_WMMA",
+    "speedup": 11.222221374511719
+  },
+  "comparison_name": "FFT16 Performance Comparison",
+  "gpu": {
+    "cuda_version": "13.0",
+    "name": "NVIDIA GeForce RTX 3060"
+  },
+  "num_tests": 2,
+  "tests": [
+    {
+      "algorithm": "FFT16_Shared2D",
+      "avg_error_percent": 0.4517402969755396,
+      "compute_ms": 0.10342399775981903,
+      "correct_percent": 81.25,
+      "max_error_percent": 131.01683855056763,
+      "total_ms": 0.23228800296783447,
+      "validation_passed": false
+    },
+    {
+      "algorithm": "FFT16_WMMA",
+      "avg_error_percent": 0.4517402969755396,
+      "compute_ms": 0.009216000325977802,
+      "correct_percent": 81.25,
+      "max_error_percent": 131.01683855056763,
+      "total_ms": 0.13007999956607819,
+      "validation_passed": false
+    }
+  ],
+  "timestamp": "2025-10-10T09:17:24"
+}

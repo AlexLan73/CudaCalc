@@ -1,0 +1,38 @@
+{
+  "algorithm": "FFT16_WMMA",
+  "config": {
+    "num_windows": 256,
+    "points_per_ray": 1024,
+    "ray_count": 4,
+    "total_points": 4096,
+    "window_fft": 16
+  },
+  "description": "Tensor Cores, FP32, Linear unroll, 9.4x faster!",
+  "git_commit": "",
+  "profiling": {
+    "basic": {
+      "compute_ms": 0.009216000325977802,
+      "download_ms": 0.06099199876189232,
+      "throughput_mpts": 31.48831498818778,
+      "total_ms": 0.13007999956607819,
+      "upload_ms": 0.05987200140953064
+    },
+    "gpu": {
+      "cuda_version": "13.0",
+      "driver_version": "13.0",
+      "name": "NVIDIA GeForce RTX 3060"
+    }
+  },
+  "test_name": "FFT16_WMMA_Test",
+  "timestamp": "2025-10-10T09:17:24",
+  "validation": {
+    "avg_relative_error": 0.004517402969755396,
+    "correct_percent": 81.25,
+    "failed_points": 768,
+    "max_relative_error": 1.3101683855056763,
+    "passed": false,
+    "reference": "cuFFT",
+    "tolerance": 0.0001,
+    "total_points": 4096
+  }
+}

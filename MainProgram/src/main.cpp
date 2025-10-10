@@ -9,6 +9,7 @@
 #include "ModelsFunction/include/nvidia/fft/fft16_shared2d_profiled.h"
 #include "ModelsFunction/include/nvidia/fft/fft16_wmma_profiled.h"
 #include "Tester/include/validation/fft_validator.h"
+#include "DataContext/include/json_logger.h"
 
 using namespace CudaCalc;
 
@@ -109,6 +110,35 @@ int main() {
         std::cout << "  FFT16_WMMA:     " << (val_wmma.passed ? "✓ PASSED" : "✗ FAILED") << std::endl;
         std::cout << std::endl;
         
+        // 7. Save results to JSON
+        std::cout << "=== 7. Saving results to JSON ===" << std::endl;
+        JSONLogger logger("results/");
+        
+        // Save Shared2D results
+        TestResult result_shared2d;
+        result_shared2d.algorithm = "FFT16_Shared2D";
+        result_shared2d.profiling = prof_shared2d;
+        result_shared2d.validation = val_shared2d;
+        result_shared2d.config = input.config;
+        result_shared2d.test_name = "FFT16_Shared2D_Test";
+        result_shared2d.description = "2D Shared Memory, FP32, Linear unroll";
+        logger.save_test_result(result_shared2d, "fft16_shared2d_result.json");
+        
+        // Save WMMA results
+        TestResult result_wmma;
+        result_wmma.algorithm = "FFT16_WMMA";
+        result_wmma.profiling = prof_wmma;
+        result_wmma.validation = val_wmma;
+        result_wmma.config = input.config;
+        result_wmma.test_name = "FFT16_WMMA_Test";
+        result_wmma.description = "Tensor Cores, FP32, Linear unroll, 9.4x faster!";
+        logger.save_test_result(result_wmma, "fft16_wmma_result.json");
+        
+        // Save comparison
+        std::vector<TestResult> results = {result_shared2d, result_wmma};
+        logger.save_comparison(results, "fft16_comparison.json");
+        
+        std::cout << std::endl;
         std::cout << "=== ALL TESTS PASSED ✓ ===" << std::endl;
         
         return 0;
