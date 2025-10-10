@@ -1,0 +1,172 @@
+
+╔═════════════════════════════════════════════════════════════════════════╗
+║            FFT32 COMPLETE COMPARISON TABLE                             ║
+╚═════════════════════════════════════════════════════════════════════════╝
+
+Configuration:
+  FFT window: 32
+  Sine period: 16
+  Runs per size: 10
+
+┌─────────┬──────────────┬─────────────┬──────────────┬──────────────┬──────────┐
+│ Windows │ Total Points │ Our MIN (ms)│ Target (ms)  │ Diff (ms)    │ Diff (%) │
+├─────────┼──────────────┼─────────────┼──────────────┼──────────────┼──────────┤
+SineGenerator: Generated 32 points
+  Ray count: 1
+  Points per ray: 32
+  Period: 16 points
+  Amplitude: 1
+  Phase: 0 rad
+  FFT window: 32
+  Number of windows: 1
+  Return for validation: NO
+│       1 │           32 │    0.007520 │     0.008050 │    -0.000530 │    -6.6% │
+SineGenerator: Generated 64 points
+  Ray count: 1
+  Points per ray: 64
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 2
+  Return for validation: NO
+│       2 │           64 │    0.007168 │     0.006150 │    +0.001018 │   +16.6% │
+SineGenerator: Generated 128 points
+  Ray count: 1
+  Points per ray: 128
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 4
+  Return for validation: NO
+│       4 │          128 │    0.006368 │     0.006450 │    -0.000082 │    -1.3% │
+SineGenerator: Generated 256 points
+  Ray count: 4
+  Points per ray: 64
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 8
+  Return for validation: NO
+│       8 │          256 │    0.006496 │     0.006450 │    +0.000046 │    +0.7% │
+SineGenerator: Generated 512 points
+  Ray count: 4
+  Points per ray: 128
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 16
+  Return for validation: NO
+│      16 │          512 │    0.007168 │     0.006250 │    +0.000918 │   +14.7% │
+SineGenerator: Generated 1024 points
+  Ray count: 4
+  Points per ray: 256
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 32
+  Return for validation: NO
+│      32 │         1024 │    0.009312 │     0.006600 │    +0.002712 │   +41.1% │
+SineGenerator: Generated 2048 points
+  Ray count: 4
+  Points per ray: 512
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 64
+  Return for validation: NO
+│      64 │         2048 │    0.009248 │     0.083950 │    -0.074702 │   -89.0% │
+SineGenerator: Generated 4096 points
+  Ray count: 4
+  Points per ray: 1024
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 128
+  Return for validation: NO
+│     128 │         4096 │    0.009344 │     0.007700 │    +0.001644 │   +21.4% │
+SineGenerator: Generated 8192 points
+  Ray count: 4
+  Points per ray: 2048
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 256
+  Return for validation: NO
+│     256 │         8192 │    0.009216 │     0.010800 │    -0.001584 │   -14.7% │
+SineGenerator: Generated 16384 points
+  Ray count: 4
+  Points per ray: 4096
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 512
+  Return for validation: NO
+│     512 │        16384 │    0.014784 │     0.014300 │    +0.000484 │    +3.4% │
+SineGenerator: Generated 32768 points
+  Ray count: 4
+  Points per ray: 8192
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 1024
+  Return for validation: NO
+│    1024 │        32768 │    0.020064 │     0.044300 │    -0.024236 │   -54.7% │
+SineGenerator: Generated 65536 points
+  Ray count: 4
+  Points per ray: 16384
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 2048
+  Return for validation: NO
+│    2048 │        65536 │    0.023584 │     0.022600 │    +0.000984 │    +4.4% │
+SineGenerator: Generated 131072 points
+  Ray count: 4
+  Points per ray: 32768
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 4096
+  Return for validation: NO
+│    4096 │       131072 │    0.035264 │     0.030100 │    +0.005164 │   +17.2% │
+SineGenerator: Generated 262144 points
+  Ray count: 4
+  Points per ray: 65536
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 8192
+  Return for validation: NO
+│    8192 │       262144 │    0.061312 │     0.046400 │    +0.014912 │   +32.1% │
+SineGenerator: Generated 524288 points
+  Ray count: 4
+  Points per ray: 131072
+  Period: 16 points
+  Amplitude: 1.0
+  Phase: 0.0 rad
+  FFT window: 32
+  Number of windows: 16384
+  Return for validation: NO
+│   16384 │       524288 │    0.109536 │     0.048800 │    +0.060736 │  +124.5% │
+└─────────┴──────────────┴─────────────┴──────────────┴──────────────┴──────────┘
+
+═══════════════════════════════════════════════════════════════════════════
+Legend:
+  Target: AMGpuCuda REAL FFT results (from table)
+  Our:    CudaCalc COMPLEX FFT results
+  Note:   COMPLEX FFT is computationally heavier than REAL FFT!
+═══════════════════════════════════════════════════════════════════════════
+

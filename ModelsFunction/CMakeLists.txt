@@ -19,6 +19,12 @@ target_sources(ModelsFunction
         src/nvidia/fft/FFT32_WMMA/fft32_wmma_optimized.cpp
         src/nvidia/fft/FFT32_WMMA/fft32_wmma_optimized_kernel.cu
         src/nvidia/fft/FFT32_WMMA/fft32_wmma_optimized_profiled.cpp
+        src/nvidia/fft/FFT32_WMMA/fft32_wmma_v2_ultra.cpp
+        src/nvidia/fft/FFT32_WMMA/fft32_wmma_v2_ultra_kernel.cu
+        src/nvidia/fft/FFT32_WMMA/fft32_wmma_v3_final.cpp
+        src/nvidia/fft/FFT32_WMMA/fft32_wmma_v3_final_kernel.cu
+        src/nvidia/fft/FFT32_WMMA/fft32_wmma_v4_correct.cpp
+        src/nvidia/fft/FFT32_WMMA/fft32_wmma_v4_correct_kernel.cu
 )
 
 target_include_directories(ModelsFunction
