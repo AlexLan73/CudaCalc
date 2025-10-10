@@ -4,12 +4,15 @@ add_library(Tester STATIC)
 
 target_sources(Tester
     PRIVATE
-        src/placeholder.cpp
         # Will add:
         # src/performance/basic_profiler.cpp
         # src/performance/memory_profiler.cpp
         # src/validation/fft_validator.cpp
 )
+
+# Temporary: add dummy source to allow linking
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "// Temporary")
+target_sources(Tester PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
 
 target_include_directories(Tester
     PUBLIC
