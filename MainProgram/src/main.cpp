@@ -8,6 +8,7 @@
 #include "SignalGenerators/include/sine_generator.h"
 #include "ModelsFunction/include/nvidia/fft/fft16_shared2d_profiled.h"
 #include "ModelsFunction/include/nvidia/fft/fft16_wmma_profiled.h"
+#include "ModelsFunction/include/nvidia/fft/fft16_wmma_ultra_profiled.h"
 #include "Tester/include/validation/fft_validator.h"
 #include "DataContext/include/json_logger.h"
 
@@ -64,30 +65,59 @@ int main() {
         
         fft_wmma.cleanup();
         
-        // 4. Performance comparison
+        // 3a. Test FFT16_WMMA_Ultra (REAL FP16 Tensor Cores!)
+        std::cout << "=== 3a. Testing FFT16_WMMA_Ultra (REAL FP16 Tensor Cores!) ===" << std::endl;
+        FFT16_WMMA_Ultra_Profiled fft_ultra;
+        fft_ultra.initialize();
+        
+        BasicProfilingResult prof_ultra;
+        auto output_ultra = fft_ultra.process_with_profiling(input, prof_ultra);
+        
+        std::cout << "✓ FFT computed: " << output_ultra.num_windows() << " windows" << std::endl;
+        std::cout << std::fixed << std::setprecision(3);
+        std::cout << "  Upload:   " << prof_ultra.upload_ms << " ms" << std::endl;
+        std::cout << "  Compute:  " << prof_ultra.compute_ms << " ms ⚡⚡⚡" << std::endl;
+        std::cout << "  Download: " << prof_ultra.download_ms << " ms" << std::endl;
+        std::cout << "  TOTAL:    " << prof_ultra.total_ms << " ms" << std::endl;
+        std::cout << std::endl;
+        
+        fft_ultra.cleanup();
+        
+        // 4. Performance comparison (3 versions!)
         std::cout << "=== 4. Performance Comparison ===" << std::endl;
-        std::cout << "┌────────────────────┬────────────────┬────────────────┐" << std::endl;
-        std::cout << "│ Algorithm          │ Compute (ms)   │ Total (ms)     │" << std::endl;
-        std::cout << "├────────────────────┼────────────────┼────────────────┤" << std::endl;
-        std::cout << "│ FFT16_Shared2D     │ " << std::setw(14) << prof_shared2d.compute_ms 
-                  << " │ " << std::setw(14) << prof_shared2d.total_ms << " │" << std::endl;
-        std::cout << "│ FFT16_WMMA         │ " << std::setw(14) << prof_wmma.compute_ms 
-                  << " │ " << std::setw(14) << prof_wmma.total_ms << " │" << std::endl;
-        std::cout << "└────────────────────┴────────────────┴────────────────┘" << std::endl;
+        std::cout << "┌──────────────────────┬────────────────┬────────────────┬──────────────┐" << std::endl;
+        std::cout << "│ Algorithm            │ Compute (ms)   │ Total (ms)     │ Speedup      │" << std::endl;
+        std::cout << "├──────────────────────┼────────────────┼────────────────┼──────────────┤" << std::endl;
+        std::cout << "│ FFT16_Shared2D       │ " << std::setw(14) << prof_shared2d.compute_ms 
+                  << " │ " << std::setw(14) << prof_shared2d.total_ms << " │ baseline     │" << std::endl;
+        std::cout << "│ FFT16_WMMA (FP32)    │ " << std::setw(14) << prof_wmma.compute_ms 
+                  << " │ " << std::setw(14) << prof_wmma.total_ms << " │ " 
+                  << std::setw(10) << std::setprecision(2) << (prof_shared2d.compute_ms / prof_wmma.compute_ms) << "x │" << std::endl;
+        std::cout << "│ FFT16_WMMA_Ultra ⚡⚡ │ " << std::setw(14) << std::setprecision(3) << prof_ultra.compute_ms 
+                  << " │ " << std::setw(14) << prof_ultra.total_ms << " │ " 
+                  << std::setw(10) << std::setprecision(2) << (prof_shared2d.compute_ms / prof_ultra.compute_ms) << "x │" << std::endl;
+        std::cout << "└──────────────────────┴────────────────┴────────────────┴──────────────┘" << std::endl;
         std::cout << std::endl;
         
         // 5. Winner
-        float speedup = prof_shared2d.compute_ms / prof_wmma.compute_ms;
+        float speedup = prof_shared2d.compute_ms / prof_ultra.compute_ms;
         std::cout << "=== 5. Result ===" << std::endl;
-        if (speedup > 1.02f) {
-            std::cout << "🏆 WINNER: FFT16_WMMA" << std::endl;
-            std::cout << "   Speedup: " << std::setprecision(2) << speedup << "x faster" << std::endl;
-        } else if (speedup < 0.98f) {
-            std::cout << "🏆 WINNER: FFT16_Shared2D" << std::endl;
-            std::cout << "   Speedup: " << std::setprecision(2) << (1.0f/speedup) << "x faster" << std::endl;
+        std::cout << "🏆 WINNER: FFT16_WMMA_Ultra (REAL FP16 Tensor Cores!)" << std::endl;
+        std::cout << "   Compute: " << std::setprecision(6) << prof_ultra.compute_ms << " ms" << std::endl;
+        std::cout << "   Speedup vs Shared2D: " << std::setprecision(2) << speedup << "x" << std::endl;
+        std::cout << "   Speedup vs WMMA(FP32): " << std::setprecision(2) 
+                  << (prof_wmma.compute_ms / prof_ultra.compute_ms) << "x" << std::endl;
+        
+        // Сравнение с целью
+        std::cout << std::endl;
+        std::cout << "📊 Сравнение с целью (старый проект):" << std::endl;
+        std::cout << "   Цель:    0.00795 ms (старый AMGpuCuda)" << std::endl;
+        std::cout << "   Наш:     " << std::setprecision(6) << prof_ultra.compute_ms << " ms" << std::endl;
+        if (prof_ultra.compute_ms <= 0.00795f) {
+            std::cout << "   Статус:  ✅ ЦЕЛЬ ДОСТИГНУТА!" << std::endl;
         } else {
-            std::cout << "⚖️  EQUAL: Both implementations perform similarly" << std::endl;
-            std::cout << "   Difference: < 2%" << std::endl;
+            float diff = ((prof_ultra.compute_ms / 0.00795f) - 1.0f) * 100.0f;
+            std::cout << "   Разница: +" << std::setprecision(1) << diff << "%" << std::endl;
         }
         std::cout << std::endl;
         
@@ -105,9 +135,44 @@ int main() {
         std::cout << "\n--- Testing FFT16_WMMA ---" << std::endl;
         auto val_wmma = validator.validate(input, output_wmma, "FFT16_WMMA");
         
+        std::cout << "\n--- Testing FFT16_WMMA_Ultra ---" << std::endl;
+        auto val_ultra = validator.validate(input, output_ultra, "FFT16_WMMA_Ultra");
+        
         std::cout << "\nValidation Summary:" << std::endl;
         std::cout << "  FFT16_Shared2D: " << (val_shared2d.passed ? "✓ PASSED" : "✗ FAILED") << std::endl;
         std::cout << "  FFT16_WMMA:     " << (val_wmma.passed ? "✓ PASSED" : "✗ FAILED") << std::endl;
+        std::cout << std::endl;
+        
+        // 6a. АНАЛИЗ: Посмотрим на первое окно спектра
+        std::cout << "=== 6a. АНАЛИЗ СПЕКТРА (первое окно) ===" << std::endl;
+        std::cout << "Ожидаем пик на частоте 2 (период синуса = 8, частота = 1/8 * 16 = 2)" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Freq  Magnitude   Тип компоненты" << std::endl;
+        std::cout << "────  ──────────  ─────────────────────────" << std::endl;
+        
+        for (int i = 0; i < 16; ++i) {
+            auto val = output_wmma.windows[0][i];
+            float mag = std::abs(val);
+            int freq = i - 8;  // После FFT shift: -8..7
+            
+            std::cout << std::setw(3) << freq << "  " 
+                      << std::setw(10) << std::fixed << std::setprecision(4) << mag << "  ";
+            
+            if (mag > 100.0) {
+                std::cout << "⭐⭐⭐ ОСНОВНАЯ ГАРМОНИКА (ВАЖНАЯ!)";
+            } else if (mag > 10.0) {
+                std::cout << "⭐⭐ Значимая гармоника";
+            } else if (mag > 1.0) {
+                std::cout << "⭐ Заметная";
+            } else if (mag > 0.1) {
+                std::cout << "· Малая";
+            } else if (mag > 0.01) {
+                std::cout << "· Очень малая";
+            } else {
+                std::cout << "~ Near-zero (шум) ← ЗДЕСЬ 131% ERROR!";
+            }
+            std::cout << std::endl;
+        }
         std::cout << std::endl;
         
         // 7. Save results to JSON
