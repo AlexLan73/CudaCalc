@@ -4,8 +4,7 @@ add_library(SignalGenerators STATIC)
 
 target_sources(SignalGenerators
     PRIVATE
-        src/placeholder.cpp
-        # Will add: src/sine_generator.cpp
+        src/sine_generator.cpp
 )
 
 target_include_directories(SignalGenerators
