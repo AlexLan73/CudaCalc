@@ -45,9 +45,14 @@ __global__ void fft16_shared2d_kernel(
     // === SHARED MEMORY: 2D ARRAY [64 FFTs][16 points] ===
     __shared__ float2 shmem[64][16];
     
-    // === LOAD INPUT TO SHARED MEMORY ===
+    // === LOAD INPUT TO SHARED MEMORY WITH BIT-REVERSAL ===
+    // For FFT16, bit-reversal permutation (4 bits):
+    // 0→0, 1→8, 2→4, 3→12, 4→2, 5→10, 6→6, 7→14, 8→1, 9→9, 10→5, 11→13, 12→3, 13→11, 14→7, 15→15
+    const int bit_reversed[16] = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
+    
     const int input_idx = global_fft_id * 16 + point_id;
-    shmem[block_fft_id][point_id] = make_float2(input[input_idx].x, input[input_idx].y);
+    const int reversed_idx = bit_reversed[point_id];
+    shmem[block_fft_id][reversed_idx] = make_float2(input[input_idx].x, input[input_idx].y);
     
     __syncthreads();
     
@@ -66,19 +71,15 @@ __global__ void fft16_shared2d_kernel(
             float2 a = shmem[block_fft_id][idx1];
             float2 b = shmem[block_fft_id][idx2];
             
-            // Twiddle factor: W_2^k = exp(-i * π * k)
-            // For step=1: W_2^0 = 1, W_2^1 = -1 (alternating)
-            const float angle = -M_PI * point_id;
-            const float cos_w = cosf(angle);
-            const float sin_w = sinf(angle);
+            // Twiddle for stage 0: W_2^k where k is position in pair
+            // idx1: k=0, W_2^0 = 1
+            // idx2: k=1, W_2^1 = exp(-i*π) = -1
+            // So twiddle for idx2 is just -1 (no complex multiply needed!)
             
-            // Complex multiply: b * twiddle
-            const float b_tw_real = b.x * cos_w - b.y * sin_w;
-            const float b_tw_imag = b.x * sin_w + b.y * cos_w;
-            
-            // Butterfly: a ± b*twiddle
-            shmem[block_fft_id][idx1] = make_float2(a.x + b_tw_real, a.y + b_tw_imag);
-            shmem[block_fft_id][idx2] = make_float2(a.x - b_tw_real, a.y - b_tw_imag);
+            // Butterfly: a + b*W and a - b*W, where W=1 for stage 0
+            // Simplifies to: a + b and a - b
+            shmem[block_fft_id][idx1] = make_float2(a.x + b.x, a.y + b.y);
+            shmem[block_fft_id][idx2] = make_float2(a.x - b.x, a.y - b.y);
         }
         __syncthreads();
     }

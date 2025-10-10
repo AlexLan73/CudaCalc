@@ -56,9 +56,13 @@ __global__ void fft16_wmma_kernel(
     // Padding to avoid bank conflicts on Ampere
     __shared__ float2 shmem[8][18];  // 18 instead of 16 for padding
     
-    // === LOAD INPUT TO SHARED MEMORY ===
+    // === LOAD INPUT TO SHARED MEMORY WITH BIT-REVERSAL ===
+    // For FFT16, bit-reversal permutation (4 bits):
+    const int bit_reversed[16] = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
+    
     const int input_idx = global_fft_id * 16 + point_id;
-    shmem[block_fft_id][point_id] = make_float2(input[input_idx].x, input[input_idx].y);
+    const int reversed_idx = bit_reversed[point_id];
+    shmem[block_fft_id][reversed_idx] = make_float2(input[input_idx].x, input[input_idx].y);
     
     __syncthreads();
     
@@ -88,13 +92,13 @@ __global__ void fft16_wmma_kernel(
         float2 a = shmem[block_fft_id][idx1];
         float2 b = shmem[block_fft_id][idx2];
         
-        // Twiddle: W_2^k (k=point_id)
-        // For step=1: W_2^0=1, W_2^1=-1 (alternating)
-        const float sign = (point_id & 1) ? -1.0f : 1.0f;
+        // Twiddle for stage 0: W_2^k where k is position in pair
+        // idx1: k=0, W_2^0 = 1
+        // idx2: k=1, W_2^1 = exp(-i*π) = -1
+        // Butterfly: a + b and a - b (twiddle=1 for both elements)
         
-        // Butterfly with optimized twiddle
-        shmem[block_fft_id][idx1] = make_float2(a.x + sign*b.x, a.y + sign*b.y);
-        shmem[block_fft_id][idx2] = make_float2(a.x - sign*b.x, a.y - sign*b.y);
+        shmem[block_fft_id][idx1] = make_float2(a.x + b.x, a.y + b.y);
+        shmem[block_fft_id][idx2] = make_float2(a.x - b.x, a.y - b.y);
     }
     __syncthreads();
     

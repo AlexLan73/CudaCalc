@@ -96,7 +96,7 @@ int main() {
         
         // 6. Validation tests
         std::cout << "=== 6. Validating results against cuFFT ===" << std::endl;
-        FFTValidator validator(0.01);  // 1% tolerance for first test
+        FFTValidator validator(0.0001);  // 0.01% tolerance
         
         std::cout << "\n--- Testing FFT16_Shared2D ---" << std::endl;
         auto val_shared2d = validator.validate(input, output_shared2d, "FFT16_Shared2D");
