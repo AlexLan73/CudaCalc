@@ -1,0 +1,142 @@
+{
+  "registry_version": "1.0",
+  "created": "2025-10-10T00:00:00",
+  "last_updated": "2025-10-10T12:00:00",
+  "experiments": [
+    {
+      "id": "exp_001",
+      "name": "FFT16_Initial_Implementation",
+      "date": "2025-10-10",
+      "session": "fft16_debug",
+      "algorithm": "FFT16_Shared2D",
+      "status": "archived_broken",
+      "performance": {
+        "compute_ms": 0.078,
+        "total_ms": 0.193,
+        "throughput_mpts": 21.2
+      },
+      "validation": {
+        "passed": false,
+        "max_error_percent": 3263212800.0,
+        "avg_error_percent": 15384381.05,
+        "failed_points": 4096,
+        "total_points": 4096
+      },
+      "archive_location": "DataContext/Models/NVIDIA/FFT/16/archive_before_fix_2025_10_10/",
+      "git_tag": "v0.1.0-broken-but-fast",
+      "git_commit": "e142018",
+      "notes": "Fast but incorrect. Saved before debugging."
+    },
+    {
+      "id": "exp_002",
+      "name": "FFT16_WMMA_Initial",
+      "date": "2025-10-10",
+      "session": "fft16_debug",
+      "algorithm": "FFT16_WMMA",
+      "status": "archived_broken",
+      "performance": {
+        "compute_ms": 0.008,
+        "total_ms": 0.118,
+        "throughput_mpts": 34.7,
+        "speedup_vs_shared2d": 9.25
+      },
+      "validation": {
+        "passed": false,
+        "max_error_percent": 3263213600.0,
+        "avg_error_percent": 15384383.28,
+        "failed_points": 4096,
+        "total_points": 4096
+      },
+      "archive_location": "DataContext/Models/NVIDIA/FFT/16/archive_before_fix_2025_10_10/",
+      "git_tag": "v0.1.0-broken-but-fast",
+      "git_commit": "e142018",
+      "notes": "9.25x faster than Shared2D but incorrect results."
+    },
+    {
+      "id": "exp_003",
+      "name": "FFT16_Shared2D_Fixed",
+      "date": "2025-10-10",
+      "session": "fft16_debug",
+      "algorithm": "FFT16_Shared2D",
+      "status": "working",
+      "performance": {
+        "compute_ms": 0.060,
+        "total_ms": 0.172,
+        "throughput_mpts": 23.8
+      },
+      "validation": {
+        "passed": false,
+        "max_error_percent": 131.02,
+        "avg_error_percent": 0.45,
+        "failed_points": 768,
+        "total_points": 4096,
+        "correct_percent": 81.0
+      },
+      "bugs_fixed": [
+        "Stage 0 twiddle factor",
+        "Bit-reversal permutation"
+      ],
+      "git_commit": "4f5de54",
+      "source_file": "ModelsFunction/src/nvidia/fft/FFT16_Shared2D/fft16_shared2d_kernel.cu",
+      "notes": "Fixed! 0.45% avg error, 81% points correct."
+    },
+    {
+      "id": "exp_004",
+      "name": "FFT16_WMMA_Fixed",
+      "date": "2025-10-10",
+      "session": "fft16_debug",
+      "algorithm": "FFT16_WMMA",
+      "status": "best_current",
+      "performance": {
+        "compute_ms": 0.008,
+        "total_ms": 0.120,
+        "throughput_mpts": 34.1,
+        "speedup_vs_shared2d": 9.4
+      },
+      "validation": {
+        "passed": false,
+        "max_error_percent": 131.02,
+        "avg_error_percent": 0.45,
+        "failed_points": 768,
+        "total_points": 4096,
+        "correct_percent": 81.0
+      },
+      "bugs_fixed": [
+        "Stage 0 twiddle factor",
+        "Bit-reversal permutation"
+      },
+      "optimizations": [
+        "Pre-computed twiddle factors",
+        "Warp-friendly thread config",
+        "Bank conflict avoidance (padding)",
+        "Tensor Core utilization"
+      ],
+      "git_commit": "4f5de54",
+      "source_file": "ModelsFunction/src/nvidia/fft/FFT16_WMMA/fft16_wmma_kernel.cu",
+      "notes": "BEST! 9.4x faster, 0.45% avg error, 81% correct.",
+      "is_best": true
+    }
+  ],
+  "best_records": {
+    "FFT16": {
+      "fastest": {
+        "experiment_id": "exp_004",
+        "compute_ms": 0.008,
+        "algorithm": "FFT16_WMMA"
+      },
+      "most_accurate": {
+        "experiment_id": "exp_003",
+        "avg_error_percent": 0.45,
+        "algorithm": "FFT16_Shared2D",
+        "note": "Same accuracy as WMMA but slower"
+      }
+    }
+  },
+  "statistics": {
+    "total_experiments": 4,
+    "working_experiments": 2,
+    "broken_experiments": 2,
+    "best_speedup_achieved": 9.4
+  }
+}
+
