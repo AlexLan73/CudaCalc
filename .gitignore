@@ -1,15 +1,6 @@
-# Build directories
+# Build artifacts
 build/
-cmake-build-*/
-out/
-
-# Compiled files
-*.o
-*.a
-*.so
-*.dll
-*.exe
-*.lib
+results/
 
 # IDE
 .vscode/
@@ -18,17 +9,20 @@ out/
 *.swo
 *~
 
-# Temporary
-*.tmp
-*.log
-*.bak
+# Compiled
+*.o
+*.a
+*.so
+*.exe
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
-*.egg-info/
+
+# Logs
+*.log
 
 # OS
 .DS_Store
