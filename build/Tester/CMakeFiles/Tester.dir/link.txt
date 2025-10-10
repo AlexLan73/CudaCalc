@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../lib/libTester.a CMakeFiles/Tester.dir/src/placeholder.cpp.o
-/usr/bin/ranlib ../lib/libTester.a

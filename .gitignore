@@ -1,2 +1,35 @@
-token_plus.txt
-*.token
+# Build directories
+build/
+cmake-build-*/
+out/
+
+# Compiled files
+*.o
+*.a
+*.so
+*.dll
+*.exe
+*.lib
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary
+*.tmp
+*.log
+*.bak
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db

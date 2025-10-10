@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../lib/libDataContext.a CMakeFiles/DataContext.dir/src/placeholder.cpp.o
-/usr/bin/ranlib ../lib/libDataContext.a
