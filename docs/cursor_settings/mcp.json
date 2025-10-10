@@ -1,0 +1,44 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "context7-mcp-server@latest"],
+      "env": {
+        "CONTEXT7_API_KEY": "YOUR_CONTEXT7_API_KEY_HERE"
+      }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["sequential-thinking-mcp@latest"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@automatalabs/mcp-server-playwright"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["github-mcp-custom@latest", "stdio"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
+      }
+    },
+    "MemoryBank": {
+      "command": "npx",
+      "args": ["memory-bank-mcp@latest"]
+    },
+    "BraveSearch": {
+      "command": "npx",
+      "args": ["mcp-server-brave-search@latest"],
+      "env": {
+        "BRAVE_API_KEY": "YOUR_BRAVE_API_KEY_HERE"
+      }
+    },      
+    "Firecrawl": {
+      "command": "npx",
+      "args": ["firecrawl-mcp@latest"],
+      "env": {
+        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_API_KEY_HERE"
+      }
+    }
+  }
+}

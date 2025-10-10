@@ -1,0 +1,29 @@
+# Build artifacts
+build/
+results/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled
+*.o
+*.a
+*.so
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

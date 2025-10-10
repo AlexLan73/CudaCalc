@@ -1,0 +1,30 @@
+# Установленные расширения Cursor
+
+## Python Development
+- anysphere.cursorpyright-1.0.9
+- ms-python.python-2025.6.1-linux-x64
+- ms-python.debugpy-2025.10.0-linux-x64
+
+## C++ Development
+- kylinideteam.cppdebug-0.1.0-linux-x64
+
+## Установка расширений
+
+### Через Cursor UI:
+1. Ctrl+Shift+X (открыть Extensions)
+2. Найти нужное расширение
+3. Нажать Install
+
+### Через командную строку:
+```bash
+cursor --install-extension anysphere.cursorpyright
+cursor --install-extension ms-python.python
+cursor --install-extension ms-python.debugpy
+cursor --install-extension kylinideteam.cppdebug
+```
+
+### Для Windows:
+Замените `cursor` на полный путь:
+```cmd
+"C:\Users\YourName\AppData\Local\Programs\cursor\Cursor.exe" --install-extension EXTENSION_ID
+```

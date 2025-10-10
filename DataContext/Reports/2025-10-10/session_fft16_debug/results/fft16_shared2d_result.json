@@ -1,0 +1,38 @@
+{
+  "algorithm": "FFT16_Shared2D",
+  "config": {
+    "num_windows": 256,
+    "points_per_ray": 1024,
+    "ray_count": 4,
+    "total_points": 4096,
+    "window_fft": 16
+  },
+  "description": "2D Shared Memory, FP32, Linear unroll",
+  "git_commit": "",
+  "profiling": {
+    "basic": {
+      "compute_ms": 0.10342399775981903,
+      "download_ms": 0.05923200026154518,
+      "throughput_mpts": 17.633282596033098,
+      "total_ms": 0.23228800296783447,
+      "upload_ms": 0.06963200122117996
+    },
+    "gpu": {
+      "cuda_version": "13.0",
+      "driver_version": "13.0",
+      "name": "NVIDIA GeForce RTX 3060"
+    }
+  },
+  "test_name": "FFT16_Shared2D_Test",
+  "timestamp": "2025-10-10T09:17:24",
+  "validation": {
+    "avg_relative_error": 0.004517402969755396,
+    "correct_percent": 81.25,
+    "failed_points": 768,
+    "max_relative_error": 1.3101683855056763,
+    "passed": false,
+    "reference": "cuFFT",
+    "tolerance": 0.0001,
+    "total_points": 4096
+  }
+}
