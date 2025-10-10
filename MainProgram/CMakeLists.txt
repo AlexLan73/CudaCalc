@@ -1,11 +1,11 @@
-# MainProgram Module - Entry point for FFT16 testing
+# MainProgram Module - Entry point for FFT testing
 
+# FFT16 Test
 add_executable(cudacalc_fft16_test)
 
 target_sources(cudacalc_fft16_test
     PRIVATE
-        # Will add: src/main_fft16_test.cpp
-        src/main.cpp  # Temporary placeholder
+        src/main.cpp
 )
 
 target_link_libraries(cudacalc_fft16_test
@@ -20,5 +20,25 @@ target_link_libraries(cudacalc_fft16_test
         nlohmann_json::nlohmann_json
 )
 
-message(STATUS "  MainProgram: Executable configured")
+# FFT32 Test
+add_executable(cudacalc_fft32_test)
+
+target_sources(cudacalc_fft32_test
+    PRIVATE
+        src/main_fft32.cpp
+)
+
+target_link_libraries(cudacalc_fft32_test
+    PRIVATE
+        Interface
+        SignalGenerators
+        DataContext
+        ModelsFunction
+        Tester
+        CUDA::cudart
+        CUDA::cufft
+        nlohmann_json::nlohmann_json
+)
+
+message(STATUS "  MainProgram: Executables configured (FFT16, FFT32)")
 
