@@ -5,9 +5,8 @@ add_library(Tester STATIC)
 target_sources(Tester
     PRIVATE
         src/performance/basic_profiler.cpp
+        src/performance/memory_profiler.cpp
         src/validation/fft_validator.cpp
-        # Will add:
-        # src/performance/memory_profiler.cpp
 )
 
 target_include_directories(Tester
