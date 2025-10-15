@@ -1,0 +1,4 @@
+FFT512 Baseline Version - Validated against cuFFT
+✅ Bin 1 = 512.000000
+✅ Max error = 0.000000%
+Block structure: [2, 512] = 2 windows per block

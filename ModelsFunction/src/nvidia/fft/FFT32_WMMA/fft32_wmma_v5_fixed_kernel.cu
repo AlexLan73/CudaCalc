@@ -159,11 +159,10 @@ __global__ void fft32_v5_fixed_kernel(
         __syncthreads();
     }
 
-    // Store with FFT shift
+    // === STORE OUTPUT (NO SHIFT!) ===
     const int output_idx = (global_fft_id << 5) + point_id;
-    const int shifted_p = (point_id < 16) ? (point_id + 16) : (point_id - 16);
-    output[output_idx].x = shmem[block_fft_id][shifted_p].x;
-    output[output_idx].y = shmem[block_fft_id][shifted_p].y;
+    output[output_idx].x = shmem[block_fft_id][point_id].x;
+    output[output_idx].y = shmem[block_fft_id][point_id].y;
 }
 
 namespace CudaCalc {

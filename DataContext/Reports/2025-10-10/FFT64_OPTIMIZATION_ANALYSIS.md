@@ -334,3 +334,4 @@ __pipeline_memcpy_async(&shmem[...], &input[...], sizeof(float2));
 
 **Следующий шаг**: Реализовать FFT64 V2 и протестировать!
 
+

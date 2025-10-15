@@ -218,13 +218,13 @@ __global__ void fft32_v3_final_kernel(
     
     // === STORE OUTPUT WITH FFT SHIFT ===
     #pragma unroll
+    // === STORE OUTPUT (NO SHIFT!) ===
     for (int p = 0; p < 2; ++p) {
         const int point_idx = y + (p << 4);
         const int output_idx = (global_fft_id << 5) + point_idx;
-        const int shifted_p = (point_idx < 16) ? (point_idx + 16) : (point_idx - 16);
         
-        output[output_idx].x = shmem[x][shifted_p].x;
-        output[output_idx].y = shmem[x][shifted_p].y;
+        output[output_idx].x = shmem[x][point_idx].x;
+        output[output_idx].y = shmem[x][point_idx].y;
     }
 }
 

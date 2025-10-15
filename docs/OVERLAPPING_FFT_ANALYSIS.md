@@ -184,3 +184,5 @@ for (int i = 0; i < 2; ++i) cudaStreamCreate(&streams[i]);
 ---
 
 *Анализ основан на результатах нашего comprehensive FFT benchmark и occupancy sweep*
+
+

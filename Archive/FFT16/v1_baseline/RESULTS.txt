@@ -1,0 +1,26 @@
+FFT16 v1 BASELINE Results
+========================
+
+Date: 13 октября 2025
+
+Configuration:
+- Block: [64, 16] = 1024 threads
+- 64 windows per block
+- Pre-computed twiddle tables (8 values)
+- Linear unrolled butterfly (4 stages)
+- Bit-reversal permutation
+
+Performance (256 windows):
+- Min time: 0.005120 ms
+- Target: 0.007950 ms (AMGpuCuda)
+- Status: ✅ 1.55x FASTER!
+
+Validation:
+- Max error: 0.0000357%
+- Failed windows: 0 / 64
+- Status: ✅ PERFECT
+
+Status: Already exceeds target! 🎉
+
+
+

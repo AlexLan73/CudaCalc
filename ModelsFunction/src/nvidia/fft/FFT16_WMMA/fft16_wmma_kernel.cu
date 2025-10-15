@@ -176,17 +176,9 @@ __global__ void fft16_wmma_kernel(
     __syncthreads();
     
     // ===================================================================
-    // FFT SHIFT: Rearrange output
+    // STORE TO GLOBAL MEMORY (NO SHIFT!)
     // ===================================================================
-    int shifted_idx;
-    if (point_id < 8) {
-        shifted_idx = point_id + 8;  // DC and positive → upper half
-    } else {
-        shifted_idx = point_id - 8;  // Negative → lower half
-    }
-    
-    // === STORE TO GLOBAL MEMORY WITH SHIFT ===
-    const int output_idx = global_fft_id * 16 + shifted_idx;
+    const int output_idx = global_fft_id * 16 + point_id;
     const float2 result = shmem[block_fft_id][point_id];
     output[output_idx] = make_cuComplex(result.x, result.y);
 }

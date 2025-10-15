@@ -29,6 +29,16 @@ __constant__ float TWIDDLE_IMAG_16[8] = {
     -1.000000f, -0.923880f, -0.707107f, -0.382683f
 };
 
+// Bit reverse for 4 bits (FFT16)
+__device__ int bitReverse4(int x) {
+    int result = 0;
+    result |= (x & 1) << 3;
+    result |= (x & 2) << 1;
+    result |= (x & 4) >> 1;
+    result |= (x & 8) >> 3;
+    return result;
+}
+
 /**
  * @brief MICRO-OPTIMIZED FFT16 kernel
  * 
@@ -55,10 +65,11 @@ __global__ void fft16_wmma_optimized_kernel(
     // === SHARED MEMORY: [64 FFT][16 points] ===
     __shared__ float2 shmem[64][18];  // Padding for bank conflict avoidance
     
-    // === LOAD with __ldg() (read-only cache) ===
+    // === LOAD with __ldg() AND BIT-REVERSAL ===
     const int input_idx = global_fft_id * 16 + y;
+    const int reversed_y = bitReverse4(y);
     const cuComplex val = __ldg(&input[input_idx]);
-    shmem[x][y] = make_float2(val.x, val.y);
+    shmem[x][reversed_y] = make_float2(val.x, val.y);
     
     __syncthreads();
     
@@ -92,7 +103,7 @@ __global__ void fft16_wmma_optimized_kernel(
         const float tw_imag = TWIDDLE_IMAG_16[pos << 2];
         
         // Complex multiply: b * twiddle
-        const float b_tw_r = a.x * tw_real - b.y * tw_imag;
+        const float b_tw_r = b.x * tw_real - b.y * tw_imag;
         const float b_tw_i = b.x * tw_imag + b.y * tw_real;
         
         shmem[x][idx1] = make_float2(a.x + b_tw_r, a.y + b_tw_i);
@@ -139,9 +150,8 @@ __global__ void fft16_wmma_optimized_kernel(
     }
     __syncthreads();
     
-    // === FFT SHIFT & STORE ===
-    const int shifted_y = (y < 8) ? (y + 8) : (y - 8);
-    const int output_idx = global_fft_id * 16 + shifted_y;
+    // === STORE OUTPUT (NO SHIFT!) ===
+    const int output_idx = global_fft_id * 16 + y;
     
     const float2 result = shmem[x][y];
     output[output_idx] = make_cuComplex(result.x, result.y);

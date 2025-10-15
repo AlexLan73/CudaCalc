@@ -1,0 +1,4 @@
+FFT256 Baseline Version - Validated against cuFFT
+✅ Bin 1 = 256.000000
+✅ Max error = 0.000000%
+Block structure: [4, 256] = 4 windows per block

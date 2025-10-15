@@ -220,3 +220,5 @@ int get_optimal_batch_size(int signal_length, int num_signals) {
 ---
 
 *Анализ основан на результатах comprehensive FFT benchmark и occupancy sweep*
+
+

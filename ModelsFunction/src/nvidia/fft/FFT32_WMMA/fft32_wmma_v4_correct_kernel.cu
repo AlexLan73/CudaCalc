@@ -173,13 +173,10 @@ __global__ void fft32_v4_correct_kernel(
     }
     __syncthreads();
     
-    // === FFT SHIFT & STORE ===
+    // === STORE OUTPUT (NO SHIFT!) ===
     // Each thread stores 2 points
-    const int shifted_y1 = (y < 16) ? (y + 16) : (y - 16);
-    const int shifted_y2 = ((y + 16) < 16) ? ((y + 16) + 16) : ((y + 16) - 16);
-    
-    const int output_idx1 = global_fft_id * 32 + shifted_y1;
-    const int output_idx2 = global_fft_id * 32 + shifted_y2;
+    const int output_idx1 = global_fft_id * 32 + y;
+    const int output_idx2 = global_fft_id * 32 + y + 16;
     
     output[output_idx1] = make_cuComplex(my_fft[y].x, my_fft[y].y);
     output[output_idx2] = make_cuComplex(my_fft[y + 16].x, my_fft[y + 16].y);

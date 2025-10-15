@@ -1,0 +1,4 @@
+FFT1024 Baseline Version - Validated against cuFFT
+✅ Bin 1 = 1024.000000
+✅ Max error = 0.000000%
+Block structure: [1, 1024] = 1 window per block

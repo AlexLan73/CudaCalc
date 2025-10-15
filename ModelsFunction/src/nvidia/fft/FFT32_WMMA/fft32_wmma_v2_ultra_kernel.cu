@@ -205,11 +205,10 @@ __global__ void fft32_v2_ultra_kernel(
         __syncthreads();
     }
     
-    // === STORE OUTPUT WITH FFT SHIFT ===
+    // === STORE OUTPUT (NO SHIFT!) ===
     const int output_idx = (globalFFTId << 5) + pointId;
-    const int shifted_p = (pointId < 16) ? (pointId + 16) : (pointId - 16);
-    output[output_idx].x = fft_data[shifted_p].x;
-    output[output_idx].y = fft_data[shifted_p].y;
+    output[output_idx].x = fft_data[pointId].x;
+    output[output_idx].y = fft_data[pointId].y;
 }
 
 // ==========================================

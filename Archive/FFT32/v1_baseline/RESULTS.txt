@@ -1,0 +1,26 @@
+FFT32 v1 BASELINE Results
+========================
+
+Date: 13 октября 2025
+
+Configuration:
+- Block: [32, 32] = 1024 threads
+- 32 windows per block
+- Pre-computed twiddle tables (16 values)
+- Linear unrolled butterfly (5 stages)
+- Bit-reversal permutation
+
+Performance (16384 windows):
+- Min time: 0.077824 ms
+- Target: 0.048800 ms (AMGpuCuda REAL FFT)
+- Status: 59.5% slower
+
+Validation:
+- Max error: 0.000012%
+- Failed windows: 0 / 32
+- Status: ✅ PERFECT
+
+Next: Optimize for speed!
+
+
+
